@@ -1,9 +1,9 @@
 //
 //    FILE: unit_test_001.cpp
 //  AUTHOR: Rob Tillaart
-//    DATE: 2022-05-28
-// PURPOSE: unit tests for the SHEX Serial HEX library
-//          https://github.com/RobTillaart/SHEX
+//    DATE: 2022-07-08
+// PURPOSE: unit tests for the DRV8825 library
+//          https://github.com/RobTillaart/DRV8825
 //          https://github.com/Arduino-CI/arduino_ci/blob/master/REFERENCE.md
 //
 
@@ -29,15 +29,16 @@
 // assertNAN(arg);                                 // isnan(a)
 // assertNotNAN(arg);                              // !isnan(a)
 
+
 #include <ArduinoUnitTests.h>
 
-#include "AS5600.h"
+#include "DRV8825.h"
 #include "Wire.h"
 
 
 unittest_setup()
 {
-  fprintf(stderr, "AS5600_LIB_VERSION: %s\n", (char *) AS5600_LIB_VERSION);
+  fprintf(stderr, "DRV8825_LIB_VERSION: %s\n", (char *) DRV8825_LIB_VERSION);
 }
 
 
@@ -48,156 +49,98 @@ unittest_teardown()
 
 unittest(test_constants)
 {
-  assertEqual(0, AS5600_CLOCK_WISE);
-  assertEqual(1, AS5600_COUNTERCLOCK_WISE);
-
-  assertEqual(0, AS5600_MODE_DEGREES);
-  assertEqual(1, AS5600_MODE_RADIANS);
-
-  assertEqualFloat(360.0/4096, AS5600_RAW_TO_DEGREES, 0.0001);
-  assertEqualFloat((PI*2.0)/4096, AS5600_RAW_TO_RADIANS, 0.0001);
-
-  assertEqual(0, AS5600_OUTMODE_ANALOG_100);
-  assertEqual(1, AS5600_OUTMODE_ANALOG_90);
-  assertEqual(2, AS5600_OUTMODE_PWM);
-
-  assertEqual(0, AS5600_POWERMODE_NOMINAL);
-  assertEqual(1, AS5600_POWERMODE_LOW1);
-  assertEqual(2, AS5600_POWERMODE_LOW2);
-  assertEqual(3, AS5600_POWERMODE_LOW3);
-
-  assertEqual(0, AS5600_PWM_115);
-  assertEqual(1, AS5600_PWM_230);
-  assertEqual(2, AS5600_PWM_460);
-  assertEqual(3, AS5600_PWM_920);
-
-  assertEqual(0, AS5600_HYST_OFF);
-  assertEqual(1, AS5600_HYST_LSB1);
-  assertEqual(2, AS5600_HYST_LSB2);
-  assertEqual(3, AS5600_HYST_LSB3);
-
-  assertEqual(0, AS5600_SLOW_FILT_16X);
-  assertEqual(1, AS5600_SLOW_FILT_8X);
-  assertEqual(2, AS5600_SLOW_FILT_4X);
-  assertEqual(3, AS5600_SLOW_FILT_2X);
-
-  assertEqual(0, AS5600_FAST_FILT_NONE);
-  assertEqual(1, AS5600_FAST_FILT_LSB6);
-  assertEqual(2, AS5600_FAST_FILT_LSB7);
-  assertEqual(3, AS5600_FAST_FILT_LSB9);
-  assertEqual(4, AS5600_FAST_FILT_LSB18);
-  assertEqual(5, AS5600_FAST_FILT_LSB21);
-  assertEqual(6, AS5600_FAST_FILT_LSB24);
-  assertEqual(7, AS5600_FAST_FILT_LSB10);
-
-  assertEqual(0, AS5600_WATCHDOG_OFF);
-  assertEqual(1, AS5600_WATCHDOG_ON);
+  assertEqual(0, DRV8825_CLOCK_WISE);
+  assertEqual(1, DRV8825_COUNTERCLOCK_WISE);
 }
 
 
 unittest(test_constructor)
 {
-  AS5600 as5600;
+  DRV8825 stepper;
 
-  as5600.begin(4);
-  assertTrue(as5600.isConnected());  // keep CI happy
+  assertTrue(stepper.begin(4, 5));
+
+  assertTrue(stepper.setDirection());
+  assertEqual(DRV8825_CLOCK_WISE, stepper.getDirection());
+
+  assertTrue(stepper.setDirection(DRV8825_COUNTERCLOCK_WISE));
+  assertEqual(DRV8825_COUNTERCLOCK_WISE, stepper.getDirection());
 }
 
 
-unittest(test_address)
+unittest(test_steps_per_rotation)
 {
-  AS5600 as5600;
+  DRV8825 stepper;
 
-  as5600.begin(4);
-  assertEqual(0x36, as5600.getAddress());
+  assertTrue(stepper.begin(4, 5));
+  assertEqual(0, stepper.getStepsPerRotation());
+
+  stepper.setStepsPerRotation(1600);
+  assertEqual(1600, stepper.getStepsPerRotation());
 }
 
 
-unittest(test_hardware_direction)
+unittest(test_step_1)
 {
-  AS5600 as5600;
+  DRV8825 stepper;
 
-  as5600.begin(4);
-  assertEqual(AS5600_CLOCK_WISE, as5600.getDirection());
+  assertTrue(stepper.begin(4, 5));
+  stepper.setStepsPerRotation(1600);
 
-  as5600.setDirection();
-  assertEqual(AS5600_CLOCK_WISE, as5600.getDirection());
-
-  as5600.setDirection(AS5600_COUNTERCLOCK_WISE);
-  assertEqual(AS5600_COUNTERCLOCK_WISE, as5600.getDirection());
-
-  as5600.setDirection(AS5600_CLOCK_WISE);
-  assertEqual(AS5600_CLOCK_WISE, as5600.getDirection());
-}
-
-
-unittest(test_software_direction)
-{
-  AS5600 as5600;
-
-  as5600.begin(255);
-  assertEqual(AS5600_CLOCK_WISE, as5600.getDirection());
-
-  as5600.setDirection();
-  assertEqual(AS5600_CLOCK_WISE, as5600.getDirection());
-
-  as5600.setDirection(AS5600_COUNTERCLOCK_WISE);
-  assertEqual(AS5600_COUNTERCLOCK_WISE, as5600.getDirection());
-
-  as5600.setDirection(AS5600_CLOCK_WISE);
-  assertEqual(AS5600_CLOCK_WISE, as5600.getDirection());
-}
-
-
-unittest(test_offset)
-{
-  AS5600 as5600;
-
-  as5600.begin();
-
-  for (int of = 0; of < 360; of += 40)
+  for (int i= 0; i < 10; i++)
   {
-    as5600.setOffset(of);
-    assertEqualFloat(of, as5600.getOffset(), 0.05);
+    step();
+    delay(1);
   }
-
-  assertTrue(as5600.setOffset(-40.25));
-  assertEqualFloat(319.75, as5600.getOffset(), 0.05);
-
-  assertTrue(as5600.setOffset(-400.25));
-  assertEqualFloat(319.75, as5600.getOffset(), 0.05);
-
-  assertTrue(as5600.setOffset(753.15));
-  assertEqualFloat(33.15, as5600.getOffset(), 0.05);
-
-  assertFalse(as5600.setOffset(36000.1));
-  assertFalse(as5600.setOffset(-36000.1));
+  assertEqual(10, stepper.getSteps());
+  for (int i= 0; i < 10; i++)
+  {
+    step();
+    delay(1);
+  }
+  assertEqual(20, stepper.getSteps());
+  
+  stepper.resetSteps(0);
+  for (int i= 0; i < 10; i++)
+  {
+    step();
+    delay(1);
+  }
+  assertEqual(10, stepper.getSteps());
 }
 
 
-unittest(test_failing_set_commands)
+unittest(test_step_2)
 {
-  AS5600 as5600;
+  DRV8825 stepper;
 
-  as5600.begin();
+  assertTrue(stepper.begin(4, 5));
+  stepper.setStepsPerRotation(0);
 
-  assertFalse(as5600.setZPosition(4096));
-  assertFalse(as5600.setMPosition(4096));
-  assertFalse(as5600.setMaxAngle(4096));
-
-  assertFalse(as5600.setConfigure(0x4000));
-  assertFalse(as5600.setPowerMode(4));
-  assertFalse(as5600.setHysteresis(4));
-  assertFalse(as5600.setOutputMode(3));
-  assertFalse(as5600.setPWMFrequency(4));
-  assertFalse(as5600.setSlowFilter(4));
-  assertFalse(as5600.setFastFilter(8));
-  assertFalse(as5600.setWatchDog(2));
+  for (int i= 0; i < 10; i++)
+  {
+    step();
+    delay(1);
+    assertEqual(0, stepper.getSteps());
+  }
 }
 
 
+unittest(test_step_pulse_length)
+{
+  DRV8825 stepper;
 
-// FOR REMAINING ONE NEED A STUB
+  assertTrue(stepper.begin(4, 5));
+  stepper.setStepPulseLength();
+  assertEqual(2, stepper.getStepPulseLength());
+  for (int i = 0; i < 20; i += 3)
+  {
+    stepper.setStepPulseLength(i);
+    assertEqual(i, stepper.getStepPulseLength());
+  }
+}
+
+
 
 unittest_main()
 
