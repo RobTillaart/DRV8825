@@ -89,13 +89,13 @@ unittest(test_step_1)
 
   for (int i= 0; i < 10; i++)
   {
-    step();
+    stepper.step();
     delay(1);
   }
   assertEqual(10, stepper.getSteps());
   for (int i= 0; i < 10; i++)
   {
-    step();
+    stepper.step();
     delay(1);
   }
   assertEqual(20, stepper.getSteps());
@@ -103,7 +103,7 @@ unittest(test_step_1)
   stepper.resetSteps(0);
   for (int i= 0; i < 10; i++)
   {
-    step();
+    stepper.step();
     delay(1);
   }
   assertEqual(10, stepper.getSteps());
@@ -119,7 +119,7 @@ unittest(test_step_2)
 
   for (int i= 0; i < 10; i++)
   {
-    step();
+    stepper.step();
     delay(1);
     assertEqual(0, stepper.getSteps());
   }
