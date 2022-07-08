@@ -155,7 +155,7 @@ unittest(test_position)
 
   assertTrue(stepper.setPosition(0));
   assertEqual(0, stepper.getPosition());
-  for (int i = 0; i < 20; i += 3)
+  for (int i = 0; i < 20; i++)
   {
     stepper.step();
   }
