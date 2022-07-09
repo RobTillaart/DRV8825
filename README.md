@@ -47,8 +47,8 @@ const uint8_t DRV8825_COUNTERCLOCK_WISE  = 1;  //  HIGH
 
  with steps per rotation as parameter.
 This parameter is optional and if set to zero, steps will not be counted.
-- **bool begin(uint8_t dirPin, uint8_t stepPin)** set the direction and step pin.
-Both pins are initially set to LOW, meaning DRV8825_CLOCK_WISE.
+- **bool begin(uint8_t dirPin, uint8_t stepPin)** set the direction pin and step pin.
+Both pins are set to LOW. For direction this is DRV8825_CLOCK_WISE.
 
 
 ### Direction
@@ -56,8 +56,8 @@ Both pins are initially set to LOW, meaning DRV8825_CLOCK_WISE.
 To define in which way the motor will turn.
 
 - **void setDirection(uint8_t direction = DRV8825_CLOCK_WISE)**
-switch direction between DRV8825_CLOCK_WISE (0) or
-DRV8825_COUNTERCLOCK_WISE (1), default CW.
+switch direction between DRV8825_CLOCK_WISE (0 = default) or
+DRV8825_COUNTERCLOCK_WISE (1).
 - **uint8_t getDirection()** returns DRV8825_CLOCK_WISE (0) or
 DRV8825_COUNTERCLOCK_WISE (1).
 
@@ -73,7 +73,7 @@ or zero default.
 This also updates the position and the steps counters.
 - **uint32_t resetSteps(uint32_t s = 0 )** to reset the steps counter,
 default to zero. 
-Returns the last value of steps.
+Returns the last value of internal steps counter.
 - **uint32_t getSteps()** returns the steps made since start of the program or the last **resetSteps()**.
 - **bool setPosition(uint16_t pos = 0)** to calibrate the position of the motor. Default to zero.
 Works only if stepsPerRotation > 0
@@ -141,7 +141,7 @@ Some will only be worked on if requested and time permits.
   - other?
 - if stepsPerRotation is set to zero, should pos be set to zero?
   - NB it will not be updated anymore.
-
+- do we need steps counter?
 
 #### should
 

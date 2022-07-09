@@ -48,7 +48,6 @@ uint16_t DRV8825::getStepsPerRotation()
 bool DRV8825::setDirection(uint8_t direction)
 {
   if (direction > 1) return false;
-  if (direction == _direction) return true;
   _direction = direction;
   //  timing from datasheet 650 ns figure 1
   delayMicroseconds(1);
@@ -88,7 +87,7 @@ void DRV8825::step()
 }
 
 
-uint32_t DRV8825::resetSteps(int32_t s)
+uint32_t DRV8825::resetSteps(uint32_t s)
 {
   uint32_t t = _steps;
   _steps = s;
