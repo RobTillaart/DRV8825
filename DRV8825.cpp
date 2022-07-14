@@ -10,8 +10,9 @@
 //  0.1.1   2022-07-08  update readme.md
 //                      add setPosition() + getPosition();
 //                      minor optimizations
-//  0.1.2   2022-07-14  add support for SLP RST en EN pin
+//  0.1.2   2022-07-14  add support for SLP RST and EN pin
 //                      update documentation
+//                      update build-CI
 
 
 #include "DRV8825.h"
@@ -167,7 +168,11 @@ void DRV8825::disable()
 
 bool DRV8825::isEnabled()
 {
-  return (digitalRead(_enablePin) == LOW);
+  if (_enablePin != 255)
+  {
+    return (digitalRead(_enablePin) == LOW);
+  }
+  return true;
 }
 
 
@@ -200,7 +205,11 @@ void DRV8825::wakeup()
 
 bool DRV8825::isSleeping()
 {
-  return (digitalRead(_sleepPin) == LOW);
+  if (_sleepPin != 255)
+  {
+    return (digitalRead(_sleepPin) == LOW);
+  }
+  return false;
 }
 
 

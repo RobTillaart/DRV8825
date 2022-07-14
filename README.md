@@ -213,6 +213,8 @@ Some will only be worked on if requested and time permits.
   - blocking
   - max 1 rotation?
   - optimize "position admin"
+- should begin return bool?
+
 
 #### could
 
