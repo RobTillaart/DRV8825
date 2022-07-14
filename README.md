@@ -159,6 +159,9 @@ The library does not monitor this pin as that would need a background process.
 The user is advised to check this pin at regular intervals
 or connect the FLT pin to an interrupt pin of the processor. 
 
+- LOW  == fault condition (overtemp, overcurrent)
+- HIGH == OK
+
 The device does not provide means to interpret the type of 
 error, but one could at least call **disable()**.
 

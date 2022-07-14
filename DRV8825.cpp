@@ -38,7 +38,7 @@ bool DRV8825::begin(uint8_t DIR, uint8_t STEP, uint8_t EN, uint8_t RST, uint8_t 
   {
     _enablePin = EN;
     pinMode(_enablePin, OUTPUT);
-    digitalWrite(_enablePin, HIGH);  //  page 3
+    digitalWrite(_enablePin, LOW);  //  page 3
   }
   if (RST != 255)
   {
@@ -48,7 +48,7 @@ bool DRV8825::begin(uint8_t DIR, uint8_t STEP, uint8_t EN, uint8_t RST, uint8_t 
   }
   if (SLP != 255)
   {
-      _sleepPin = SLP;
+    _sleepPin = SLP;
     pinMode(_sleepPin, OUTPUT);
     digitalWrite(_sleepPin, HIGH);   //  page 3
   }
