@@ -180,9 +180,9 @@ void DRV8825::reset()
 {
   if (_resetPin != 255)
   {
-    digitalWrite(_resetPin, LOW);
-    delay(1);
     digitalWrite(_resetPin, HIGH);
+    delay(1);
+    digitalWrite(_resetPin, LOW);
   }
 }
 

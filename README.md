@@ -118,6 +118,9 @@ Default the value = 2.
 - **bool isEnabled()** reads back the line state.
 True means enabled.
 
+After **enable()** the system needs 650 ns before **step()**
+can be called. See 7.6 Timing Requirements.
+
 
 ### Reset (RST)
 
@@ -130,6 +133,9 @@ True means enabled.
 - **void wakeup()** sets the enable line HIGH.
 - **bool isSleeping()** reads back the line state.
 True means enabled.
+
+After **wakeup()** the system needs **1700 us** before **step()**
+can be called. See 7.6 Timing Requirements.
 
 
 ### MicroSteps
