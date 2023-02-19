@@ -183,7 +183,7 @@ bool DRV8825::sleep()
   return true;
 }
 
-void DRV8825::wakeup()
+bool DRV8825::wakeup()
 {
   if (_sleepPin == 255) return false;
   digitalWrite(_sleepPin, HIGH);
