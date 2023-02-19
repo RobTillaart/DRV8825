@@ -151,7 +151,7 @@ bool DRV8825::enable()
 
 bool DRV8825::disable()
 {
-  if (_enablePin == 255) return false
+  if (_enablePin == 255) return false;
   digitalWrite(_enablePin, HIGH);
   return true;
 }
