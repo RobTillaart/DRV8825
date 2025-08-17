@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.2.1] - 2025-08-17
-- add parameter to **step(uint8_t steps = 1)**
 - update readme.md
 - fix changelog.md
 - minor edits

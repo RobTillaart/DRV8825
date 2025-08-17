@@ -36,7 +36,7 @@ public:
   //       STEPS
   void     setStepsPerRotation(uint16_t stepsPerRotation);
   uint16_t getStepsPerRotation();
-  void     step(uint8_t steps = 1);
+  void     step();
   uint32_t resetSteps(uint32_t s = 0 );
   uint32_t getSteps();
 

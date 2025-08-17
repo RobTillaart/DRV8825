@@ -78,28 +78,25 @@ uint8_t DRV8825::getDirection()
 }
 
 
-void DRV8825::step(uint8_t steps)
+void DRV8825::step()
 {
-  while(steps--)
-  {
-    digitalWrite(_stepPin, HIGH);
-    if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
-    digitalWrite(_stepPin, LOW);
-    if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
+  digitalWrite(_stepPin, HIGH);
+  if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
+  digitalWrite(_stepPin, LOW);
+  if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
 
-    _steps++;
-    if (_stepsPerRotation > 0)
+  _steps++;
+  if (_stepsPerRotation > 0)
+  {
+    if (_direction == DRV8825_CLOCK_WISE)
     {
-      if (_direction == DRV8825_CLOCK_WISE)
-      {
-        _position++;
-        if (_position >= _stepsPerRotation) _position = 0;
-      }
-      else
-      {
-        if (_position == 0) _position = _stepsPerRotation;
-        _position--;
-      }
+      _position++;
+      if (_position >= _stepsPerRotation) _position = 0;
+    }
+    else
+    {
+      if (_position == 0) _position = _stepsPerRotation;
+      _position--;
     }
   }
 }

@@ -97,20 +97,17 @@ Returns false for other values.
 - **uint8_t getDirection()** returns DRV8825_CLOCK_WISE (0) or
 DRV8825_COUNTERCLOCK_WISE (1).
 
+Note that changing direction while the motor is moving might cause unwanted side 
+effects. So be sure the motor is not moving (depends on specs motor).
 
-### Step(steps)
+### Step()
 
-- **void step(uint8_t steps = 1)** will give a pulse on the STEP pin.
+- **void step()** will give a pulse on the STEP pin.
 This function also updates the position and the steps counters if stepsPerRotation is set.
 The function blocks for some microseconds to send a proper signal per pulse, see setPulseLength().
-Since 0.2.1 it is possible to send up to 255 pulses in one call, however the function 
-will block up to 255 times longer (millisecond range).
-If this is a problem depends on your project requirements.
-If steps is set to 0 (zero) no pulses will be generated.
 
-Warning: do not set the steps parameter to a negative number as that could cause 
-unwanted side effects.
-
+Depending on the motor you use, the motor needs a time (typical milliseconds range) to adjust
+its position. So sending multiple steps in a tight loop will probably not work.
 
 ### Steps and position counting
 
