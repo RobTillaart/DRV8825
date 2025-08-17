@@ -36,7 +36,7 @@ bool DRV8825::begin(uint8_t DIR, uint8_t STEP, uint8_t EN, uint8_t RST, uint8_t 
   {
     _resetPin = RST;
     pinMode(_resetPin, OUTPUT);
-    digitalWrite(_resetPin, HIGH);   //  page 3
+    digitalWrite(_resetPin, HIGH);   //  page 3 (#9)
   }
   if (SLP != 255)
   {
@@ -78,25 +78,28 @@ uint8_t DRV8825::getDirection()
 }
 
 
-void DRV8825::step()
+void DRV8825::step(uint8_t steps)
 {
-  digitalWrite(_stepPin, HIGH);
-  if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
-  digitalWrite(_stepPin, LOW);
-  if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
-
-  _steps++;
-  if (_stepsPerRotation > 0)
+  while(steps--)
   {
-    if (_direction == DRV8825_CLOCK_WISE)
+    digitalWrite(_stepPin, HIGH);
+    if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
+    digitalWrite(_stepPin, LOW);
+    if (_stepPulseLength > 0) delayMicroseconds(_stepPulseLength);
+
+    _steps++;
+    if (_stepsPerRotation > 0)
     {
-      _position++;
-      if (_position >= _stepsPerRotation) _position = 0;
-    }
-    else
-    {
-      if (_position == 0) _position = _stepsPerRotation;
-      _position--;
+      if (_direction == DRV8825_CLOCK_WISE)
+      {
+        _position++;
+        if (_position >= _stepsPerRotation) _position = 0;
+      }
+      else
+      {
+        if (_position == 0) _position = _stepsPerRotation;
+        _position--;
+      }
     }
   }
 }
